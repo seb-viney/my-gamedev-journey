@@ -1,0 +1,23 @@
+{
+    "about": "Welcome to my GameDev journey! Here, I'll be documenting my progress and showcasing my projects as I learn and grow in game development.",
+    "projects": [
+        {
+            "title": "Project 1: My First Game",
+            "description": "A brief description of your first game project goes here."
+        },
+        {
+            "title": "Project 2: Advanced Platformer",
+            "description": "Details about your second, more advanced game project."
+        }
+    ],
+    "timeline": [
+        {
+            "date": "June 2024",
+            "content": "Started learning GameDev basics"
+        },
+        {
+            "date": "July 2024",
+            "content": "Completed first game prototype"
+        }
+    ]
+}
