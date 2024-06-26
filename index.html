@@ -1,51 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My GameDev Journey</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        header {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 1rem;
-        }
-        main {
-            padding: 2rem;
-            max-width: 800px;
-            margin: auto;
-        }
-        .project {
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        h2 {
-            color: #333;
-        }
-        .timeline {
-            border-left: 2px solid #333;
-            padding-left: 20px;
-            margin-left: 20px;
-        }
-        .timeline-item {
-            margin-bottom: 20px;
-        }
-        .timeline-date {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-    </style>
+    <!-- ... (keep the existing head content) ... -->
 </head>
 <body>
     <header>
@@ -54,32 +10,17 @@
     <main>
         <section id="about">
             <h2>About Me</h2>
-            <p>Welcome to my GameDev journey! Here, I'll be documenting my progress and showcasing my projects as I learn and grow in game development.</p>
+            <p id="about-content"></p>
         </section>
         <section id="projects">
             <h2>My Projects</h2>
-            <div class="project">
-                <h3>Project 1: My First Game</h3>
-                <p>A brief description of your first game project goes here.</p>
-            </div>
-            <div class="project">
-                <h3>Project 2: Advanced Platformer</h3>
-                <p>Details about your second, more advanced game project.</p>
-            </div>
+            <div id="projects-container"></div>
         </section>
         <section id="timeline">
             <h2>Journey Timeline</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-date">June 2024</div>
-                    <div class="timeline-content">Started learning GameDev basics</div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-date">July 2024</div>
-                    <div class="timeline-content">Completed first game prototype</div>
-                </div>
-            </div>
+            <div id="timeline-container" class="timeline"></div>
         </section>
     </main>
+    <script src="script.js"></script>
 </body>
 </html>
