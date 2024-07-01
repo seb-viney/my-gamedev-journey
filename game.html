@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Completed first game prototype</title>
+    <title>Maze Game - My GameDev Journey</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -54,32 +54,168 @@
     </header>
     <main>
         <section id="gameContainer">
-            <h2>My GameDev Game</h2>
+            <h2>Maze Game</h2>
             <canvas id="gameCanvas" width="400" height="400"></canvas>
             <p><a href="index.html">Back to Journey</a></p>
         </section>
     </main>
 
     <script>
-        // Basic game setup
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Game loop
+        const cellSize = 20;
+        const cols = Math.floor(canvas.width / cellSize);
+        const rows = Math.floor(canvas.height / cellSize);
+
+        let maze = [];
+        let player = { x: 0, y: 0 };
+        let goal = { x: cols - 1, y: rows - 1 };
+
+        function initMaze() {
+            for (let y = 0; y < rows; y++) {
+                maze[y] = [];
+                for (let x = 0; x < cols; x++) {
+                    maze[y][x] = { x, y, walls: [true, true, true, true], visited: false };
+                }
+            }
+        }
+
+        function generateMaze(x, y) {
+            maze[y][x].visited = true;
+            const directions = [[0, -1], [1, 0], [0, 1], [-1, 0]];
+            directions.sort(() => Math.random() - 0.5);
+
+            for (let [dx, dy] of directions) {
+                let nextX = x + dx;
+                let nextY = y + dy;
+
+                if (nextX >= 0 && nextX < cols && nextY >= 0 && nextY < rows && !maze[nextY][nextX].visited) {
+                    if (dx === 1) {
+                        maze[y][x].walls[1] = false;
+                        maze[nextY][nextX].walls[3] = false;
+                    } else if (dx === -1) {
+                        maze[y][x].walls[3] = false;
+                        maze[nextY][nextX].walls[1] = false;
+                    } else if (dy === 1) {
+                        maze[y][x].walls[2] = false;
+                        maze[nextY][nextX].walls[0] = false;
+                    } else if (dy === -1) {
+                        maze[y][x].walls[0] = false;
+                        maze[nextY][nextX].walls[2] = false;
+                    }
+                    generateMaze(nextX, nextY);
+                }
+            }
+        }
+
+        function drawMaze() {
+            ctx.strokeStyle = '#000';
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    let cell = maze[y][x];
+                    let cx = x * cellSize;
+                    let cy = y * cellSize;
+
+                    if (cell.walls[0]) {
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy);
+                        ctx.lineTo(cx + cellSize, cy);
+                        ctx.stroke();
+                    }
+                    if (cell.walls[1]) {
+                        ctx.beginPath();
+                        ctx.moveTo(cx + cellSize, cy);
+                        ctx.lineTo(cx + cellSize, cy + cellSize);
+                        ctx.stroke();
+                    }
+                    if (cell.walls[2]) {
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy + cellSize);
+                        ctx.lineTo(cx + cellSize, cy + cellSize);
+                        ctx.stroke();
+                    }
+                    if (cell.walls[3]) {
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy);
+                        ctx.lineTo(cx, cy + cellSize);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function drawPlayer() {
+            ctx.fillStyle = 'red';
+            ctx.beginPath();
+            ctx.arc(player.x * cellSize + cellSize / 2, player.y * cellSize + cellSize / 2, cellSize / 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawGoal() {
+            ctx.fillStyle = 'green';
+            ctx.beginPath();
+            ctx.arc(goal.x * cellSize + cellSize / 2, goal.y * cellSize + cellSize / 2, cellSize / 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function movePlayer(dx, dy) {
+            let newX = player.x + dx;
+            let newY = player.y + dy;
+
+            if (newX >= 0 && newX < cols && newY >= 0 && newY < rows) {
+                if (dx === 1 && !maze[player.y][player.x].walls[1]) {
+                    player.x = newX;
+                } else if (dx === -1 && !maze[player.y][player.x].walls[3]) {
+                    player.x = newX;
+                } else if (dy === 1 && !maze[player.y][player.x].walls[2]) {
+                    player.y = newY;
+                } else if (dy === -1 && !maze[player.y][player.x].walls[0]) {
+                    player.y = newY;
+                }
+            }
+
+            if (player.x === goal.x && player.y === goal.y) {
+                alert('Congratulations! You reached the goal!');
+                initGame();
+            }
+        }
+
+        function handleKeyPress(e) {
+            switch (e.key) {
+                case 'ArrowUp':
+                    movePlayer(0, -1);
+                    break;
+                case 'ArrowRight':
+                    movePlayer(1, 0);
+                    break;
+                case 'ArrowDown':
+                    movePlayer(0, 1);
+                    break;
+                case 'ArrowLeft':
+                    movePlayer(-1, 0);
+                    break;
+            }
+        }
+
+        function initGame() {
+            initMaze();
+            generateMaze(0, 0);
+            player = { x: 0, y: 0 };
+            goal = { x: cols - 1, y: rows - 1 };
+        }
+
         function gameLoop() {
-            // Clear the canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw a simple shape (placeholder for your game)
-            ctx.fillStyle = 'blue';
-            ctx.fillRect(175, 175, 50, 50);
-
-            // Continue the game loop
+            drawMaze();
+            drawGoal();
+            drawPlayer();
             requestAnimationFrame(gameLoop);
         }
 
-        // Start the game loop
+        initGame();
         gameLoop();
+        document.addEventListener('keydown', handleKeyPress);
     </script>
 </body>
 </html>
