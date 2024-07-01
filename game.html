@@ -7,28 +7,58 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            line-height: 1.6;
             margin: 0;
-            background-color: #f0f0f0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+        }
+        main {
+            padding: 2rem;
+            max-width: 800px;
+            margin: auto;
         }
         #gameContainer {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             text-align: center;
         }
         #gameCanvas {
             border: 2px solid #333;
             background-color: #fff;
+            max-width: 100%;
+        }
+        h2 {
+            color: #333;
+        }
+        a {
+            color: #333;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div id="gameContainer">
-        <h1>My GameDev Game</h1>
-        <canvas id="gameCanvas" width="400" height="400"></canvas>
-        <p><a href="index.html">Back to Journey</a></p>
-    </div>
+    <header>
+        <h1>My GameDev Journey</h1>
+    </header>
+    <main>
+        <section id="gameContainer">
+            <h2>My GameDev Game</h2>
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+            <p><a href="index.html">Back to Journey</a></p>
+        </section>
+    </main>
 
     <script>
         // Basic game setup
