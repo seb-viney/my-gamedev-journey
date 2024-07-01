@@ -65,7 +65,6 @@
             <div id="timeline-container" class="timeline"></div>
         </section>
     </main>
-
     <script>
         // Fetch data from a JSON file or API endpoint
         async function fetchData() {
@@ -102,9 +101,13 @@
             data.timeline.forEach(item => {
                 const timelineItem = document.createElement('div');
                 timelineItem.className = 'timeline-item';
+                let content = item.content;
+                if (item.gameLink) {
+                    content = `<a href="${item.gameLink}">${item.content}</a>`;
+                }
                 timelineItem.innerHTML = `
                     <div class="timeline-date">${item.date}</div>
-                    <div class="timeline-content">${item.content}</div>
+                    <div class="timeline-content">${content}</div>
                 `;
                 timelineContainer.appendChild(timelineItem);
             });
