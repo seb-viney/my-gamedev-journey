@@ -2,8 +2,8 @@
     "about": "Welcome to my GameDev journey! Here, I'll be documenting my progress and showcasing my projects as I learn and grow in game development.",
     "projects": [
         {
-            "title": "Project 1: My First Game",
-            "description": "A brief description of your first game project goes here."
+            "title": "Project 1: Navigate out of tutorial hell",
+            "description": "In a state of perpetual learning endlessly consuming tutorials, collecting snippets of knowledge, but struggling to break free and create my own games. Determined to bridge the gap between learning and doing."
         },
         {
             "title": "Project 2: Advanced Platformer",
@@ -12,13 +12,13 @@
     ],
     "timeline": [
         {
-            "date": "June 2024",
+            "date": "December 2023",
             "content": "Started learning GameDev basics"
         },
         {
             "date": "July 2024",
             "content": "Maze game - an AI experiment",
-            "gameLink": "game.html"
+            "gameLink": "maze-game.html"
         }
     ]
 }
