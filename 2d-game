@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Side-Scroller</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            border: 2px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Game state
+        const gameState = {
+            player: {
+                x: 50,
+                y: 0,
+                width: 32,
+                height: 48,
+                speed: 5,
+                jumpForce: 10,
+                velocityY: 0,
+                isJumping: false
+            },
+            gravity: 0.5,
+            terrain: [],
+            camera: {
+                x: 0,
+                y: 0
+            }
+        };
+
+        // Generate terrain
+        function generateTerrain() {
+            for (let x = 0; x < 1000; x += 32) {
+                let height = Math.floor(Math.random() * 5) + 8; // 8 to 12 blocks high
+                for (let y = 0; y < height; y++) {
+                    gameState.terrain.push({ x, y: canvas.height - (y + 1) * 32, width: 32, height: 32 });
+                }
+            }
+        }
+
+        // Draw functions
+        function drawPlayer() {
+            ctx.fillStyle = 'red';
+            ctx.fillRect(
+                gameState.player.x - gameState.camera.x,
+                gameState.player.y - gameState.camera.y,
+                gameState.player.width,
+                gameState.player.height
+            );
+        }
+
+        function drawTerrain() {
+            ctx.fillStyle = 'green';
+            gameState.terrain.forEach(block => {
+                ctx.fillRect(
+                    block.x - gameState.camera.x,
+                    block.y - gameState.camera.y,
+                    block.width,
+                    block.height
+                );
+            });
+        }
+
+        // Update functions
+        function updatePlayer() {
+            // Apply gravity
+            gameState.player.velocityY += gameState.gravity;
+            gameState.player.y += gameState.player.velocityY;
+
+            // Check for collision with terrain
+            gameState.terrain.forEach(block => {
+                if (
+                    gameState.player.x < block.x + block.width &&
+                    gameState.player.x + gameState.player.width > block.x &&
+                    gameState.player.y < block.y + block.height &&
+                    gameState.player.y + gameState.player.height > block.y
+                ) {
+                    // Collision detected
+                    gameState.player.y = block.y - gameState.player.height;
+                    gameState.player.velocityY = 0;
+                    gameState.player.isJumping = false;
+                }
+            });
+
+            // Update camera
+            gameState.camera.x = gameState.player.x - canvas.width / 2;
+            gameState.camera.y = Math.max(0, gameState.player.y - canvas.height / 2);
+        }
+
+        // Input handling
+        document.addEventListener('keydown', (event) => {
+            switch (event.key) {
+                case 'ArrowLeft':
+                    gameState.player.x -= gameState.player.speed;
+                    break;
+                case 'ArrowRight':
+                    gameState.player.x += gameState.player.speed;
+                    break;
+                case 'ArrowUp':
+                case ' ':
+                    if (!gameState.player.isJumping) {
+                        gameState.player.velocityY = -gameState.player.jumpForce;
+                        gameState.player.isJumping = true;
+                    }
+                    break;
+            }
+        });
+
+        // Game loop
+        function gameLoop() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Update game state
+            updatePlayer();
+
+            // Draw game objects
+            drawTerrain();
+            drawPlayer();
+
+            // Continue the game loop
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Initialize the game
+        generateTerrain();
+        gameLoop();
+    </script>
+</body>
+</html>
