@@ -3,24 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2D Side-Scroller</title>
+    <title>2D Side-Scroller - My Gamedev Journey</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
+            background-color: #f4f4f4;
         }
-        canvas {
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+        }
+        main {
+            padding: 2rem;
+            max-width: 800px;
+            margin: auto;
+        }
+        #gameContainer {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        #gameCanvas {
             border: 2px solid #333;
+            background-color: #fff;
+            max-width: 100%;
+        }
+        h2 {
+            color: #333;
+        }
+        a {
+            color: #333;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <header>
+        <h1>My Gamedev Journey</h1>
+    </header>
+    <main>
+        <section id="gameContainer">
+            <h2>2D Side-Scroller</h2>
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+            <p><a href="index.html">Back to Journey</a></p>
+        </section>
+    </main>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
