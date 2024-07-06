@@ -8,7 +8,7 @@ The goal is to develop a base structure that can be expanded into a full-fledged
 
 ## Live Demo
 
-[View the web page]([insert_your_link_here](https://seb-viney.github.io/my-gamedev-journey/)
+[View the web page](https://seb-viney.github.io/my-gamedev-journey/)
 
 ## Features
 
