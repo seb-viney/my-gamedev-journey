@@ -49,15 +49,7 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1>2D Side-Scroller</h1>
-    </header>
-    <main>
-        <section id="gameContainer">
-            <canvas id="gameCanvas" width="800" height="600"></canvas>
-            <p><a href="index.html">Back to Journey</a></p>
-        </section>
-    </main>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -80,17 +72,113 @@
             camera: {
                 x: 0,
                 y: 0
+            },
+            chunkSize: 16,
+            chunkWidth: 32,
+            chunkHeight: 19,
+            loadedChunks: new Set(),
+            biomes: ['forest', 'plains', 'icy', 'ocean']
+        };
+
+        // Biome definitions
+        const biomeData = {
+            forest: {
+                groundColor: '#4CAF50',
+                treeFrequency: 0.2,
+                treeColor: '#795548',
+                maxHeight: 12,
+                minHeight: 8
+            },
+            plains: {
+                groundColor: '#8BC34A',
+                treeFrequency: 0.05,
+                treeColor: '#A1887F',
+                maxHeight: 6,
+                minHeight: 4
+            },
+            icy: {
+                groundColor: '#ECEFF1',
+                treeFrequency: 0.1,
+                treeColor: '#90A4AE',
+                maxHeight: 10,
+                minHeight: 6
+            },
+            ocean: {
+                groundColor: '#2196F3',
+                treeFrequency: 0,
+                maxHeight: 3,
+                minHeight: 1
             }
         };
 
-        // Generate terrain
-        function generateTerrain() {
-            for (let x = 0; x < 1000; x += 32) {
-                let height = Math.floor(Math.random() * 5) + 8; // 8 to 12 blocks high
+        // Noise function for terrain generation
+        function noise(x) {
+            return Math.sin(x / 100) * Math.sin(x / 50) * 10 + Math.sin(x / 25) * 5;
+        }
+
+        // Generate a chunk of terrain
+        function generateChunk(chunkX) {
+            const chunk = [];
+            const biome = gameState.biomes[Math.floor(Math.random() * gameState.biomes.length)];
+            const biomeInfo = biomeData[biome];
+
+            for (let x = 0; x < gameState.chunkSize; x++) {
+                const worldX = chunkX * gameState.chunkSize + x;
+                const height = Math.floor(
+                    (noise(worldX) + biomeInfo.maxHeight + biomeInfo.minHeight) / 2
+                );
+
                 for (let y = 0; y < height; y++) {
-                    gameState.terrain.push({ x, y: canvas.height - (y + 1) * 32, width: 32, height: 32 });
+                    chunk.push({
+                        x: worldX * gameState.chunkWidth,
+                        y: canvas.height - (y + 1) * gameState.chunkHeight,
+                        width: gameState.chunkWidth,
+                        height: gameState.chunkHeight,
+                        type: y === height - 1 ? 'surface' : 'ground',
+                        biome: biome
+                    });
+                }
+
+                // Add trees
+                if (biome !== 'ocean' && Math.random() < biomeInfo.treeFrequency) {
+                    for (let treeHeight = 0; treeHeight < 3; treeHeight++) {
+                        chunk.push({
+                            x: worldX * gameState.chunkWidth,
+                            y: canvas.height - (height + treeHeight + 1) * gameState.chunkHeight,
+                            width: gameState.chunkWidth,
+                            height: gameState.chunkHeight,
+                            type: 'tree',
+                            biome: biome
+                        });
+                    }
                 }
             }
+
+            return chunk;
+        }
+
+        // Load chunks around the player
+        function loadChunks() {
+            const playerChunkX = Math.floor(gameState.player.x / (gameState.chunkSize * gameState.chunkWidth));
+            
+            for (let i = -2; i <= 2; i++) {
+                const chunkX = playerChunkX + i;
+                if (!gameState.loadedChunks.has(chunkX)) {
+                    gameState.terrain.push(...generateChunk(chunkX));
+                    gameState.loadedChunks.add(chunkX);
+                }
+            }
+
+            // Remove chunks that are too far away
+            gameState.loadedChunks.forEach(chunkX => {
+                if (Math.abs(chunkX - playerChunkX) > 3) {
+                    gameState.terrain = gameState.terrain.filter(
+                        block => block.x < chunkX * gameState.chunkSize * gameState.chunkWidth ||
+                                 block.x >= (chunkX + 1) * gameState.chunkSize * gameState.chunkWidth
+                    );
+                    gameState.loadedChunks.delete(chunkX);
+                }
+            });
         }
 
         // Draw functions
@@ -105,8 +193,12 @@
         }
 
         function drawTerrain() {
-            ctx.fillStyle = 'green';
             gameState.terrain.forEach(block => {
+                if (block.type === 'tree') {
+                    ctx.fillStyle = biomeData[block.biome].treeColor;
+                } else {
+                    ctx.fillStyle = biomeData[block.biome].groundColor;
+                }
                 ctx.fillRect(
                     block.x - gameState.camera.x,
                     block.y - gameState.camera.y,
@@ -128,7 +220,8 @@
                     gameState.player.x < block.x + block.width &&
                     gameState.player.x + gameState.player.width > block.x &&
                     gameState.player.y < block.y + block.height &&
-                    gameState.player.y + gameState.player.height > block.y
+                    gameState.player.y + gameState.player.height > block.y &&
+                    block.type !== 'tree'
                 ) {
                     // Collision detected
                     gameState.player.y = block.y - gameState.player.height;
@@ -140,6 +233,9 @@
             // Update camera
             gameState.camera.x = gameState.player.x - canvas.width / 2;
             gameState.camera.y = Math.max(0, gameState.player.y - canvas.height / 2);
+
+            // Load new chunks if needed
+            loadChunks();
         }
 
         // Input handling
@@ -178,7 +274,7 @@
         }
 
         // Initialize the game
-        generateTerrain();
+        loadChunks();
         gameLoop();
     </script>
 </body>
