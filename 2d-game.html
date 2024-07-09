@@ -49,8 +49,15 @@
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
-
+    <header>
+        <h1>2D Side-Scroller</h1>
+    </header>
+    <main>
+        <section id="gameContainer">
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+            <p><a href="index.html">Back to Journey</a></p>
+        </section>
+    </main>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
